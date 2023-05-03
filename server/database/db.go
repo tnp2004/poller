@@ -1,6 +1,9 @@
 package database
 
-import "time"
+import (
+	"errors"
+	"time"
+)
 
 var timeFormat = "Monday, 2 January, 2006 3:04:05 PM"
 
@@ -18,7 +21,7 @@ func GetPolls() []Poll {
 	return pollDB
 }
 
-func InsertDB(poll Poll) []Poll {
+func InsertPoll(poll Poll) []Poll {
 	nowTime := time.Now().Format(timeFormat)
 	poll.ID = len(pollDB) + 1
 	poll.Created_at = nowTime
@@ -26,4 +29,21 @@ func InsertDB(poll Poll) []Poll {
 	pollDB = append(pollDB, poll)
 
 	return pollDB
+}
+
+func DeletePoll(id int) ([]Poll, error) {
+	for i, poll := range pollDB {
+		if id == poll.ID {
+			pollDB = deleteData(pollDB, i)
+
+			return pollDB, nil
+		}
+	}
+
+	return nil, errors.New("Poll not found")
+}
+
+func deleteData(polls []Poll, i int) []Poll {
+	polls = append(polls[:i], polls[i+1:]...)
+	return polls
 }
