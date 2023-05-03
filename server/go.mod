@@ -1,4 +1,4 @@
-module poller
+module github.com/tnp2004/poller
 
 go 1.20
 
