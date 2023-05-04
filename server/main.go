@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/tnp2004/poller/database"
 
@@ -37,14 +38,32 @@ func main() {
 
 		pollsData, err := database.DeletePoll(id)
 		if err != nil {
-			errMessage := fmt.Sprintf("Poll id: %v not found", id)
 			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-				"message": errMessage,
+				"message": err.Error(),
 			})
 		}
 
 		return c.JSON(pollsData)
 	})
 
-	app.Listen(":4000")
+	app.Patch("/api/poll/update/:id/:option", func(c *fiber.Ctx) error {
+		id, err := c.ParamsInt("id")
+		if err != nil {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"message": "Poll id must be a numbers only",
+			})
+		}
+		option := c.Params("option")
+
+		pollsData, err := database.UpdatePoint(id, option)
+		if err != nil {
+			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+				"message": err.Error(),
+			})
+		}
+
+		return c.JSON(pollsData)
+	})
+
+	log.Fatal(app.Listen(":4000"))
 }
