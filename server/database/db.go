@@ -11,9 +11,9 @@ var timeFormat = "Monday, 2 January, 2006 3:04:05 PM"
 
 type Poll struct {
 	ID         int            `json:"id"`
-	Title      string         `json:"title"`
-	Content    string         `json:"content"`
-	Options    map[string]int `json:"options"`
+	Title      string         `json:"title" validate:"required"`
+	Content    string         `json:"content" validate:"required"`
+	Options    map[string]int `json:"options" validate:"required"`
 	Created_at string         `json:"created_at"`
 	Updated_at string         `json:"updated_at"`
 }

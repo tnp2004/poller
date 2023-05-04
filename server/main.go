@@ -7,15 +7,24 @@ import (
 	"github.com/tnp2004/poller/database"
 
 	"github.com/gofiber/fiber/v2"
+	"gopkg.in/go-playground/validator.v9"
 )
+
+type ErrorResponse struct {
+	FailedField string
+	Tag         string
+	Message     string
+}
 
 func main() {
 	app := fiber.New()
+	api := app.Group("/api")
+	poll := api.Group("/poll")
 
-	app.Get("/api/poll", GetPolls)
-	app.Post("/api/poll/new", NewPoll)
-	app.Delete("/api/poll/delete/:id", DeletePoll)
-	app.Patch("/api/poll/update/:id/:option", UpdatePoll)
+	poll.Get("/", GetPolls)
+	poll.Post("/new", NewPoll)
+	poll.Delete("/delete/:id", DeletePoll)
+	poll.Patch("/update/:id/:option", UpdatePoll)
 
 	log.Fatal(app.Listen(":4000"))
 }
@@ -30,6 +39,13 @@ func NewPoll(c *fiber.Ctx) error {
 	if err := c.BodyParser(poll); err != nil {
 		return err
 	}
+
+	errors := ValidateInsertPoll(*poll)
+	if errors != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(errors)
+
+	}
+
 	pollsData := database.InsertPoll(*poll)
 
 	return c.JSON(pollsData)
@@ -71,4 +87,22 @@ func UpdatePoll(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(pollsData)
+}
+
+var validate = validator.New()
+
+func ValidateInsertPoll(poll database.Poll) []*ErrorResponse {
+	var errors []*ErrorResponse
+	err := validate.Struct(poll)
+	if err != nil {
+		for _, err := range err.(validator.ValidationErrors) {
+			var element ErrorResponse
+			element.FailedField = err.Field()
+			element.Tag = err.Tag()
+			errMessage := fmt.Sprintf("%v field is %v", err.Field(), err.Tag())
+			element.Message = errMessage
+			errors = append(errors, &element)
+		}
+	}
+	return errors
 }
