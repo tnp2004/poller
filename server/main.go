@@ -7,6 +7,7 @@ import (
 	"github.com/tnp2004/poller/database"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"gopkg.in/go-playground/validator.v9"
 )
 
@@ -20,6 +21,11 @@ func main() {
 	app := fiber.New()
 	api := app.Group("/api")
 	poll := api.Group("/poll")
+
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "http://localhost:3000",
+		AllowHeaders: "Origin, Content-Type, Accept",
+	}))
 
 	poll.Get("/", GetPolls)
 	poll.Post("/new", NewPoll)
