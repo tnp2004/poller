@@ -23,8 +23,8 @@ export default function Poll({ }: Props) {
         <CreatePoll />
       </div>
       <div className='flex flex-wrap gap-5 w-3/4 mx-auto justify-center p-5'>
-        {data?.map((poll: Poll) => {
-          return <PollCard {...poll} />
+        {data?.map((poll: Poll, index: number) => {
+          return <PollCard {...poll} key={index} />
         })}
       </div>
 

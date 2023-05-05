@@ -9,13 +9,20 @@ import (
 
 var timeFormat = "Monday, 2 January, 2006 3:04:05 PM"
 
+type Option struct {
+	Choice string `json:"choice" validate:"required"`
+	Color  string `json:"color" validate:"required"`
+	Point  int    `json:"point"`
+}
+
 type Poll struct {
-	ID         int            `json:"id"`
-	Title      string         `json:"title" validate:"required"`
-	Content    string         `json:"content" validate:"required"`
-	Options    map[string]int `json:"options" validate:"required"`
-	Created_at string         `json:"created_at"`
-	Updated_at string         `json:"updated_at"`
+	ID         int      `json:"id"`
+	Title      string   `json:"title" validate:"required"`
+	Content    string   `json:"content" validate:"required"`
+	Color      string   `json:"color" validate:"required"`
+	Options    []Option `json:"options" validate:"required"`
+	Created_at string   `json:"created_at"`
+	Updated_at string   `json:"updated_at"`
 }
 
 var pollDB = []Poll{}
@@ -55,16 +62,18 @@ func UpdatePoint(id int, opt string) ([]Poll, error) {
 	opt = strings.ToLower(opt)
 	for i, poll := range pollDB {
 		if id == poll.ID {
-			_, ok := pollDB[i].Options[opt]
-			if ok {
-				pollDB[i].Options[opt]++
-				pollDB[i].Updated_at = time.Now().Format(timeFormat)
-				return pollDB, nil
+			for j, p := range poll.Options {
+				if p.Choice == opt {
+					pollDB[i].Options[j].Point++
+					pollDB[i].Updated_at = time.Now().Format(timeFormat)
+					return pollDB, nil
+				}
 			}
 			errMessage := fmt.Sprintf("Can not update, Poll option: %v does not exist", opt)
 			return nil, errors.New(errMessage)
 		}
 	}
+	fmt.Println(pollDB)
 	errMessage := fmt.Sprintf("Can not update, Poll id: %v not found", id)
 	return nil, errors.New(errMessage)
 }
