@@ -3,7 +3,6 @@ package database
 import (
 	"errors"
 	"fmt"
-	"strings"
 	"time"
 )
 
@@ -11,7 +10,7 @@ var timeFormat = "Monday, 2 January, 2006 3:04:05 PM"
 
 type Option struct {
 	Choice string `json:"choice" validate:"required"`
-	Color  string `json:"color" validate:"required"`
+	Colour string `json:"colour" validate:"required"`
 	Point  int    `json:"point"`
 }
 
@@ -19,7 +18,7 @@ type Poll struct {
 	ID         int      `json:"id"`
 	Title      string   `json:"title" validate:"required"`
 	Content    string   `json:"content" validate:"required"`
-	Color      string   `json:"color" validate:"required"`
+	Colour     string   `json:"colour" validate:"required"`
 	Options    []Option `json:"options" validate:"required"`
 	Created_at string   `json:"created_at"`
 	Updated_at string   `json:"updated_at"`
@@ -59,7 +58,6 @@ func deleteData(polls []Poll, i int) []Poll {
 }
 
 func UpdatePoint(id int, opt string) ([]Poll, error) {
-	opt = strings.ToLower(opt)
 	for i, poll := range pollDB {
 		if id == poll.ID {
 			for j, p := range poll.Options {

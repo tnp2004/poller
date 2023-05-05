@@ -2,7 +2,6 @@ import React from 'react'
 import useSWR from 'swr'
 import { Poll } from '@/types/interfaces'
 import PollCard from '@/components/PollCard'
-import { Button } from '@mantine/core'
 import CreatePoll from '@/components/CreatePoll'
 
 type Props = {}
@@ -20,7 +19,7 @@ export default function Poll({ }: Props) {
       <h1>Poll</h1>
 
       <div className='border-2 w-1/3 h-10 rounded mx-auto'>
-        <CreatePoll />
+        <CreatePoll mutate={mutate} />
       </div>
       <div className='flex flex-wrap gap-5 w-3/4 mx-auto justify-center p-5'>
         {data?.map((poll: Poll, index: number) => {

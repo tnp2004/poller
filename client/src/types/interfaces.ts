@@ -2,6 +2,7 @@ export interface Poll {
     id: string
     title: string
     content: string
+    colour: string
     options: Options[]
     created_at: string
     updated_at: string
@@ -9,7 +10,7 @@ export interface Poll {
 
 export interface Options {
     choice: string
-    color: string
+    colour: string
 }
 
 export interface FormPoll {
