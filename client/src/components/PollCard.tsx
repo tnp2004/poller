@@ -1,31 +1,33 @@
 import { Poll } from '@/types/interfaces';
 import { Badge, Button } from '@mantine/core';
+import Link from 'next/link';
 
 interface Props extends Poll { }
 
-function PollCard({ title, content, colour }: Props) {
+function PollCard({ id, title, content, colour, tags }: Props) {
+
     return (
-        <div className='w-80 rounded-lg overflow-hidden drop-shadow-md hover:drop-shadow-xl bg-white'>
+        <Link href={`/poll/${id}`} onClick={e => e.stopPropagation()} className='w-80 rounded-lg drop-shadow-md hover:drop-shadow-xl bg-white flex flex-col justify-between cursor-pointer'>
 
-            <div className='h-32' style={{ backgroundColor: colour }}></div>
+            <div className='h-32 rounded-t-lg' style={{ backgroundColor: colour }}></div>
 
-            <div className='p-2'>
-                <div className='relative pr-1'>
+            <div className='h-full flex flex-col justify-between px-3 py-4'>
+                <div>
                     <h1 className='text-slate-700 font-bold break-words w-3/4'>{title}</h1>
-                    <Badge color="red" variant="outline" className='absolute top-4 right-2 cursor-pointer hover:text-white hover:bg-gradient-to-r from-red-500 to-rose-500'>
-                        hihi
-                    </Badge>
+                    <p className='text-slate-600 font-semibold'>{content}</p>
                 </div>
-                <p className='text-slate-600 font-semibold'>{content}</p>
+                <div className="flex flex-wrap gap-1 mt-3">
+                    {tags.map(tag => (
+                        <Link href={`/poll?tag=${tag.toLocaleLowerCase()}`} onClick={e => e.stopPropagation()}>
+                            <Badge color="red" variant="outline" className='cursor-pointer hover:text-white hover:bg-gradient-to-r from-red-500 to-rose-500'>
+                                {tag}
+                            </Badge>
+                        </Link>
+                    ))}
+                </div>
             </div>
 
-            <div className='p-1'>
-                <Button uppercase className='w-full my-2 cursor-pointer transition duration-300 hover:text-white hover:bg-gradient-to-r from-red-500 to-rose-500' variant="outline" color="red">
-                    vote a poll
-                </Button>
-            </div>
-                
-        </div>
+        </Link>
     );
 }
 
