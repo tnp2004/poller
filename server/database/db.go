@@ -20,6 +20,7 @@ type Poll struct {
 	Content    string   `json:"content" validate:"required"`
 	Colour     string   `json:"colour" validate:"required"`
 	Options    []Option `json:"options" validate:"required"`
+	Tags       []string `json:"tags"`
 	Created_at string   `json:"created_at"`
 	Updated_at string   `json:"updated_at"`
 }
@@ -71,7 +72,6 @@ func UpdatePoint(id int, opt string) ([]Poll, error) {
 			return nil, errors.New(errMessage)
 		}
 	}
-	fmt.Println(pollDB)
 	errMessage := fmt.Sprintf("Can not update, Poll id: %v not found", id)
 	return nil, errors.New(errMessage)
 }

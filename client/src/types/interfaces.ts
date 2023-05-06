@@ -4,6 +4,7 @@ export interface Poll {
     content: string
     colour: string
     options: Options[]
+    tags: string[]
     created_at: string
     updated_at: string
 }
@@ -17,4 +18,5 @@ export interface FormPoll {
     title: string
     content: string
     options: Options[]
+    tags: string[]
 }
