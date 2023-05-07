@@ -1,5 +1,5 @@
 import { Poll } from '@/types/interfaces';
-import { Badge, Button } from '@mantine/core';
+import { Badge } from '@mantine/core';
 import Link from 'next/link';
 
 interface Props extends Poll { }
@@ -18,7 +18,7 @@ function PollCard({ id, title, content, colour, tags }: Props) {
                 </div>
                 <div className="flex flex-wrap gap-1 mt-3">
                     {tags.map(tag => (
-                        <Link href={`/poll?tag=${tag.toLocaleLowerCase()}`} onClick={e => e.stopPropagation()}>
+                        <Link href={`/poll?tags=${tag}`} onClick={e => e.stopPropagation()}>
                             <Badge color="red" variant="outline" className='cursor-pointer hover:text-white hover:bg-gradient-to-r from-red-500 to-rose-500'>
                                 {tag}
                             </Badge>

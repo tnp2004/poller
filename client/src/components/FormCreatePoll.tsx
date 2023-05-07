@@ -1,9 +1,10 @@
 import { ENDPOINT } from '@/pages/poll'
 import { FormPoll, Options, Poll } from '@/types/interfaces'
-import { Badge, Button, ColorInput, Modal, MultiSelect, TextInput, Textarea } from '@mantine/core'
+import { ActionIcon, Badge, Button, ColorInput, Modal, MultiSelect, TextInput, Textarea, rem } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import React, { useState } from 'react'
 import { KeyedMutator } from 'swr'
+import { IconX, IconBox } from '@tabler/icons-react';
 
 type Props = {
     mutate: KeyedMutator<Poll[]>
@@ -66,6 +67,20 @@ export default function FormCreatePoll({ mutate }: Props) {
         setOptions(newArray);
     }
 
+    const removeButton = (index: number) => {
+        return (
+            <ActionIcon onClick={() => deleteChoice(index)} size="xs" color="gray" radius="xl" variant="transparent">
+                <IconX size={rem(10)} />
+            </ActionIcon>
+        );
+    }
+
+    const choiceColor = (colour: string) => {
+        return <ActionIcon>
+            <IconBox color={colour} size={rem(15)} />
+        </ActionIcon>
+    }
+
     return (
         <>
             <Modal opened={openModal} onClose={() => setOpenModal(false)} title="Create Poll" >
@@ -75,17 +90,16 @@ export default function FormCreatePoll({ mutate }: Props) {
                     <Textarea required mb={12} label="Content" placeholder='Explain about your poll' {...form.getInputProps("content")} />
                     <ColorInput defaultValue='#fa5c5c' required mb={12} label="Poll colour" {...form.getInputProps("colour")} format="hex" swatches={['#25262b', '#868e96', '#fa5c5c', '#e64980', '#be4bdb', '#7950f2', '#4c6ef5', '#228be6', '#15aabf', '#12b886', '#40c057', '#82c91e', '#fab005', '#fd7e14']} />
                     <MultiSelect data={POLLTAGS} mb={12} label='Tags' placeholder='What kind of your poll ?' {...form.getInputProps("tags")} />
-                   
+
                     <div className='w-full'>
                         <div className='flex gap-1'>
                             <TextInput value={optInput} onChange={e => setOptInput(e.target.value)} className='option w-2/3' required={options.length >= 2 ? false : true} mb={12} label='Options' placeholder='Poll option' />
                             <ColorInput value={optColour} onChange={setOptColour} className='w-1/3' required mb={12} label="Colour" format="hex" swatches={['#25262b', '#868e96', '#fa5c5c', '#e64980', '#be4bdb', '#7950f2', '#4c6ef5', '#228be6', '#15aabf', '#12b886', '#40c057', '#82c91e', '#fab005', '#fd7e14']} />
                         </div>
                         <div className='flex flex-wrap gap-2 rounded my-2 bg-slate-100 px-1 py-2'>
-                            {options.map(({ choice }, index) => (
-                                <Badge onClick={() => deleteChoice(index)} key={index} className='group cursor-pointer hover:bg-rose-500' color='red' variant='dot'>
-                                    <label className={`cursor-pointer block group-hover:hidden`}>{choice}</label>
-                                    <label className={`cursor-pointer hidden group-hover:block text-white`}>delete</label>
+                            {options.map(({ choice, colour }, index) => (
+                                <Badge key={index} p={3} leftSection={choiceColor(colour)} rightSection={removeButton(index)} className='cursor-pointer' color="gray" style={{ border: `1px solid ${colour}`, color: colour}}>
+                                    <label className={`cursor-pointer`}>{choice}</label>
                                 </Badge>
                             ))}
                         </div>
