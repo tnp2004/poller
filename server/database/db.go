@@ -31,6 +31,11 @@ func GetPolls() []Poll {
 	return pollDB
 }
 
+func GetPollsByTags(tags []string) []Poll {
+	matchingProducts := findMatchingPolls(pollDB, tags)
+	return matchingProducts
+}
+
 func InsertPoll(poll Poll) []Poll {
 	nowTime := time.Now().Format(timeFormat)
 	poll.ID = len(pollDB) + 1
@@ -74,4 +79,32 @@ func UpdatePoint(id int, opt string) ([]Poll, error) {
 	}
 	errMessage := fmt.Sprintf("Can not update, Poll id: %v not found", id)
 	return nil, errors.New(errMessage)
+}
+
+func findMatchingPolls(Polls []Poll, searchTags []string) []Poll {
+	var matchingPolls []Poll
+	for _, Poll := range Polls {
+		if tagsMatchAll(searchTags, Poll.Tags) {
+			matchingPolls = append(matchingPolls, Poll)
+		}
+	}
+	return matchingPolls
+}
+
+func tagsMatchAll(searchTags []string, PollTags []string) bool {
+	for _, searchTag := range searchTags {
+		if !contains(PollTags, searchTag) {
+			return false
+		}
+	}
+	return true
+}
+
+func contains(arr []string, word string) bool {
+	for _, elem := range arr {
+		if elem == word {
+			return true
+		}
+	}
+	return false
 }
