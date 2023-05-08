@@ -10,7 +10,7 @@ type Props = {
     mutate: KeyedMutator<Poll[]>
 }
 
-const POLLTAGS = ["Entertainment", "Sports", "Politics", "Food", "Animals", "Technology", "Fashion", "Travel", "Education", "Health", "Environment"];
+export const POLLTAGS = ["Entertainment", "Sports", "Politics", "Food", "Animals", "Technology", "Fashion", "Travel", "Education", "Health", "Environment"];
 
 export default function FormCreatePoll({ mutate }: Props) {
     const [openModal, setOpenModal] = useState<boolean>(false)

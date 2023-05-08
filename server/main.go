@@ -77,7 +77,6 @@ func NewPoll(c *fiber.Ctx) error {
 
 func DeletePoll(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
-	fmt.Println(id)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"message": "Poll id must be a numbers only",

@@ -35,9 +35,9 @@ export default function Poll({ }: Props) {
       </div>
       <div className='flex flex-wrap gap-5 w-3/4 mx-auto justify-center p-5'>
         {tags ? filterPollsByTags?.map((poll: Poll, index: number) => {
-          return <PollCard {...poll} key={index} />
+          return <PollCard {...poll} key={`poll_${index}`} />
         }) : data?.map((poll: Poll, index: number) => {
-          return <PollCard {...poll} key={index} />
+          return <PollCard {...poll} key={`poll_${index}`} />
         })}
       </div>
 
