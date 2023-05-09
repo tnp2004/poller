@@ -1,7 +1,8 @@
 import { Badge, Button, Menu, rem } from '@mantine/core'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { IconFilter } from '@tabler/icons-react'
 import { POLLTAGS } from './FormCreatePoll'
+import { useRouter } from 'next/router'
 
 type Props = {}
 
@@ -10,28 +11,51 @@ interface Tag {
     select: boolean
 }
 
-const filterTags = POLLTAGS.map((tag: string): Tag => {
-    return {
-        name: tag,
-        select: false
-    }
-})
-
 export default function FilterPolls({ }: Props) {
 
-    const [filterTagsData, setFilterTagsData] = useState<Tag[]>(filterTags)
+    const router = useRouter()
+    const { tags } = router.query
+    const urlTags: string[] = String(tags).split(',')
 
-    const updateTagValue = (index: number) => {
-       const newTagsArr = filterTagsData
-       newTagsArr[index].select = !newTagsArr[index].select
 
-       setFilterTagsData(newTagsArr)
+
+    const [filterTagsData, setFilterTagsData] = useState<Tag[]>([])
+
+    const updateTagValue = (tagName: string) => {
+        const newTagsArr = filterTagsData.map(tag => {
+            if (tag.name === tagName) {
+                return {
+                    name: tag.name,
+                    select: !tag.select
+                };
+            }
+
+            return tag
+        });
+
+        setFilterTagsData(newTagsArr)
     }
 
-    const searchTags = (index: number) => {
-        updateTagValue(index)
-        console.log(filterTagsData)
+    const searchTags = () => {
+        const selected = filterTagsData.filter(tag => tag.select).map(tag => tag.name)
+        const urlQuery = selected.join(',')
+        if (urlQuery) return router.push(`http://localhost:3000/poll?tags=${urlQuery}`)
+        router.push(`http://localhost:3000/poll`)
     }
+
+    useEffect(() => {
+        const filterTags = POLLTAGS.map((tag: string): Tag => {
+            return {
+                name: tag,
+                select: urlTags.includes(tag) ? true : false
+            }
+        })
+        setFilterTagsData(filterTags)
+    }, [tags])
+
+    useEffect(() => {
+        searchTags()
+    }, [filterTagsData])
 
     return (
         <Menu >
@@ -45,7 +69,7 @@ export default function FilterPolls({ }: Props) {
                 <Menu.Label>Filter tags</Menu.Label>
                 <div className='flex flex-wrap gap-1 w-60'>
                     {filterTagsData.map((tag, index) => (
-                        <Badge onClick={() => searchTags(index)} className={`cursor-pointer ${tag.select ? 'bg-rose-100' : 'bg-emerald-100'}`} color='gray' key={`tag_${index}`}>{tag.name}</Badge>
+                        <Badge onClick={() => updateTagValue(tag.name)} className={`hover:bg-red-300 hover:text-white cursor-pointer ${tag.select ? 'bg-red-400 text-white' : ''}`} color='gray' key={`tag_${index}`}>{tag.name}</Badge>
                     ))}
                 </div>
             </Menu.Dropdown>

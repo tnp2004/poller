@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import useSWR from 'swr'
 import { Poll } from '@/types/interfaces'
 import PollCard from '@/components/PollCard'
@@ -10,20 +10,27 @@ type Props = {}
 
 export const ENDPOINT = "http://localhost:4000"
 
-
 const fetcher = (url: string) => fetch(`${ENDPOINT}/${url}`).then(r => r.json())
 
 export default function Poll({ }: Props) {
 
   const router = useRouter()
   const { tags } = router.query
+
   const [filterPollsByTags, setFilterPollsByTags] = useState<Poll[]>([])
   const { data, mutate } = useSWR<Poll[]>("api/poll", fetcher)
 
   const getFilteredPolls = async () => {
-    const data = await (await fetch(`${ENDPOINT}/api/poll?tags=${tags}`)).json()
-    setFilterPollsByTags(data)
+    if (tags) {
+      const data = await (await fetch(`${ENDPOINT}/api/poll?tags=${tags}`)).json()
+      if (data.length !== 0) return setFilterPollsByTags(data)
+      setFilterPollsByTags([])
+    }
   }
+
+  useEffect(() => {
+    getFilteredPolls()
+  }, [tags])
 
   return (
     <div>
@@ -34,14 +41,20 @@ export default function Poll({ }: Props) {
         <FilterPolls />
       </div>
       <div className='flex flex-wrap gap-5 w-3/4 mx-auto justify-center p-5'>
-        {tags ? filterPollsByTags?.map((poll: Poll, index: number) => {
-          return <PollCard {...poll} key={`poll_${index}`} />
-        }) : data?.map((poll: Poll, index: number) => {
+        {tags && filterPollsByTags && filterPollsByTags?.map((poll: Poll, index: number) => {
           return <PollCard {...poll} key={`poll_${index}`} />
         })}
+
+        {tags && filterPollsByTags.length == 0 && <h1>no data filter</h1>}
+
+        {!tags && data?.map((poll: Poll, index: number) => {
+          return <PollCard {...poll} key={`poll_${index}`} />
+        })}
+
+        {!tags && data?.length == 0 && <h1>no poll data</h1>}
+
       </div>
 
-      {JSON.stringify(data)}
     </div>
   )
 }

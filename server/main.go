@@ -36,22 +36,12 @@ func main() {
 	log.Fatal(app.Listen(":4000"))
 }
 
-func arrayToString(arr []string) string {
-	return strings.Join([]string(arr), ",")
-}
-
 func GetPolls(c *fiber.Ctx) error {
 	q := c.Query("tags")
 	tags := strings.Split(q, ",")
 	if len(tags) != 0 && q != "" {
 		fillteredPolls := database.GetPollsByTags(tags)
-		if len(fillteredPolls) != 0 {
-			return c.JSON(fillteredPolls)
-		}
-		errMessage := fmt.Sprintf("Tags: %v does not exist", arrayToString(tags))
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": errMessage,
-		})
+		return c.JSON(fillteredPolls)
 	}
 
 	return c.JSON(database.GetPolls())

@@ -33,7 +33,10 @@ func GetPolls() []Poll {
 
 func GetPollsByTags(tags []string) []Poll {
 	matchingProducts := findMatchingPolls(pollDB, tags)
-	return matchingProducts
+	if matchingProducts != nil {
+		return matchingProducts
+	}
+	return []Poll{}
 }
 
 func InsertPoll(poll Poll) []Poll {

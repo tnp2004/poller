@@ -7,7 +7,6 @@ interface Props extends Poll { }
 function PollCard({ id, title, content, colour, tags }: Props) {
 
     return (
-        <>
             <Link href={`/poll/${id}`} onClick={e => e.stopPropagation()} className='w-80 rounded-lg drop-shadow-md hover:drop-shadow-xl bg-white flex flex-col justify-between cursor-pointer'>
 
                 <div className='h-32 rounded-t-lg' style={{ backgroundColor: colour }}></div>
@@ -29,7 +28,6 @@ function PollCard({ id, title, content, colour, tags }: Props) {
                 </div>
 
             </Link>
-        </>
     );
 }
 
