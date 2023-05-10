@@ -35,24 +35,24 @@ export default function Poll({ }: Props) {
   return (
     <div>
       <h1>Poll</h1>
-      <button onClick={getFilteredPolls}>show filter data</button>
       <div className='border-2 w-1/3 h-10 rounded mx-auto flex gap-1'>
         <FormCreatePoll mutate={mutate} />
         <FilterPolls />
       </div>
       <div className='flex flex-wrap gap-5 w-3/4 mx-auto justify-center p-5'>
-        {tags && filterPollsByTags && filterPollsByTags?.map((poll: Poll, index: number) => {
+        {/* Filter poll */}
+        {tags !== "all" && filterPollsByTags.length !== 0 && filterPollsByTags?.map((poll: Poll, index: number) => {
           return <PollCard {...poll} key={`poll_${index}`} />
         })}
 
-        {tags && filterPollsByTags.length == 0 && <h1>no data filter</h1>}
+        {tags !== "all" && filterPollsByTags.length == 0 && <h1>no data filter</h1>}
 
-        {!tags && data?.map((poll: Poll, index: number) => {
+        {/* All poll */}
+        {tags === "all" && data?.map((poll: Poll, index: number) => {
           return <PollCard {...poll} key={`poll_${index}`} />
         })}
 
-        {!tags && data?.length == 0 && <h1>no poll data</h1>}
-
+        {tags === "all" && data?.length == 0 && <h1>no poll data</h1>}
       </div>
 
     </div>

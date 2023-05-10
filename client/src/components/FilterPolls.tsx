@@ -15,9 +15,6 @@ export default function FilterPolls({ }: Props) {
 
     const router = useRouter()
     const { tags } = router.query
-    const urlTags: string[] = String(tags).split(',')
-
-
 
     const [filterTagsData, setFilterTagsData] = useState<Tag[]>([])
 
@@ -38,23 +35,25 @@ export default function FilterPolls({ }: Props) {
 
     const searchTags = () => {
         const selected = filterTagsData.filter(tag => tag.select).map(tag => tag.name)
-        const urlQuery = selected.join(',')
-        if (urlQuery) return router.push(`http://localhost:3000/poll?tags=${urlQuery}`)
-        router.push(`http://localhost:3000/poll`)
+        const urlQuery = selected.length !== 0 ? selected.join(',') : 'all'
+        router.push(`http://localhost:3000/poll?tags=${urlQuery}`)
     }
 
     useEffect(() => {
-        const filterTags = POLLTAGS.map((tag: string): Tag => {
-            return {
-                name: tag,
-                select: urlTags.includes(tag) ? true : false
-            }
-        })
-        setFilterTagsData(filterTags)
+        if (tags) {
+            const urlTags: string[] = String(tags).split(',')
+            const filterTags = POLLTAGS.map((tag: string): Tag => {
+                return {
+                    name: tag,
+                    select: urlTags.includes(tag)
+                }
+            })
+            setFilterTagsData(filterTags)
+        }
     }, [tags])
 
     useEffect(() => {
-        searchTags()
+        if (tags) searchTags()
     }, [filterTagsData])
 
     return (
