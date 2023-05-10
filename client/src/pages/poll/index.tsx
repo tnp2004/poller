@@ -21,16 +21,16 @@ export default function Poll({ }: Props) {
   const { data, mutate } = useSWR<Poll[]>("api/poll", fetcher)
 
   const getFilteredPolls = async () => {
-    if (tags) {
-      const data = await (await fetch(`${ENDPOINT}/api/poll?tags=${tags}`)).json()
-      if (data.length !== 0) return setFilterPollsByTags(data)
-      setFilterPollsByTags([])
-    }
+    const data = await (await fetch(`${ENDPOINT}/api/poll?tags=${tags}`)).json()
+    if (data.length !== 0) return setFilterPollsByTags(data)
+    setFilterPollsByTags([])
   }
 
   useEffect(() => {
-    getFilteredPolls()
-  }, [tags])
+    const urlPath = router.asPath
+    if (urlPath === '/poll') router.push('http://localhost:3000/poll?tags=all')
+    if (tags) getFilteredPolls()
+  })
 
   return (
     <div>
