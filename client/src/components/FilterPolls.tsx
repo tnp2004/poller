@@ -2,21 +2,25 @@ import { Badge, Button, Menu, rem } from '@mantine/core'
 import React, { useEffect, useState } from 'react'
 import { IconFilter } from '@tabler/icons-react'
 import { POLLTAGS } from './FormCreatePoll'
-import { useRouter } from 'next/router'
 
-type Props = {}
+type Props = {
+    getFilteredPolls: (tags: string) => void
+}
 
 interface Tag {
     name: string,
     select: boolean
 }
 
-export default function FilterPolls({ }: Props) {
+const pollData = POLLTAGS.map(poll => {
+    return {
+        name: poll,
+        select: false
+    }
+})
 
-    const router = useRouter()
-    const { tags } = router.query
-
-    const [filterTagsData, setFilterTagsData] = useState<Tag[]>([])
+export default function FilterPolls({ getFilteredPolls }: Props) {
+    const [filterTagsData, setFilterTagsData] = useState<Tag[]>(pollData)
 
     const updateTagValue = (tagName: string) => {
         const newTagsArr = filterTagsData.map(tag => {
@@ -29,31 +33,12 @@ export default function FilterPolls({ }: Props) {
 
             return tag
         });
-
         setFilterTagsData(newTagsArr)
     }
 
-    const searchTags = () => {
-        const selected = filterTagsData.filter(tag => tag.select).map(tag => tag.name)
-        const urlQuery = selected.length !== 0 ? selected.join(',') : 'all'
-        router.push(`http://localhost:3000/poll?tags=${urlQuery}`)
-    }
-
     useEffect(() => {
-        if (tags) {
-            const urlTags: string[] = String(tags).split(',')
-            const filterTags = POLLTAGS.map((tag: string): Tag => {
-                return {
-                    name: tag,
-                    select: urlTags.includes(tag)
-                }
-            })
-            setFilterTagsData(filterTags)
-        }
-    }, [tags])
-
-    useEffect(() => {
-        if (tags) searchTags()
+        const urlQuery = filterTagsData.filter(tag => tag.select).map(tag => tag.name).join(',')
+        getFilteredPolls(urlQuery)
     }, [filterTagsData])
 
     return (
