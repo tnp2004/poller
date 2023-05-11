@@ -1,13 +1,19 @@
 import { Poll } from '@/types/interfaces';
 import { Badge } from '@mantine/core';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 
-interface Props extends Poll { }
+interface Props extends Poll { 
+    updateFilterUI: (tag: string) => void
+}
 
-function PollCard({ id, title, content, colour, tags }: Props) {
+function PollCard({ id, title, content, colour, tags, updateFilterUI }: Props) {
 
     const router = useRouter()
+
+    const FilterTag = (e: any, tag: string) => {
+        e.stopPropagation()
+        updateFilterUI(tag)
+    }
 
     const goToPollPage = (e: any, id: string) => {
         e.stopPropagation()
@@ -26,11 +32,11 @@ function PollCard({ id, title, content, colour, tags }: Props) {
                     </div>
                     <div className="flex flex-wrap gap-1 mt-3">
                         {tags.map((tag: string, index: number) => (
-                            <Link href={`/poll?tags=${tag}`} onClick={e => e.stopPropagation()} key={`polltag_${index}`} >
+                            <button onClick={e => FilterTag(e, tag)} key={`polltag_${index}`} >
                                 <Badge color="red" variant="outline" className='cursor-pointer hover:text-white hover:bg-gradient-to-r from-red-500 to-rose-500'>
                                     {tag}
                                 </Badge>
-                            </Link>
+                            </button>
                         ))}
                     </div>
                 </div>

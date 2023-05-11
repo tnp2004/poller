@@ -5,6 +5,7 @@ import { POLLTAGS } from './FormCreatePoll'
 
 type Props = {
     getFilteredPolls: (tags: string) => void
+    filterUI: string
 }
 
 interface Tag {
@@ -19,15 +20,15 @@ const pollData = POLLTAGS.map(poll => {
     }
 })
 
-export default function FilterPolls({ getFilteredPolls }: Props) {
+export default function FilterPolls({ getFilteredPolls, filterUI }: Props) {
     const [filterTagsData, setFilterTagsData] = useState<Tag[]>(pollData)
 
-    const updateTagValue = (tagName: string) => {
+    const updateTagValue = (tagName: string, active?: boolean) => {
         const newTagsArr = filterTagsData.map(tag => {
             if (tag.name === tagName) {
                 return {
                     name: tag.name,
-                    select: !tag.select
+                    select: active || !tag.select
                 };
             }
 
@@ -36,10 +37,20 @@ export default function FilterPolls({ getFilteredPolls }: Props) {
         setFilterTagsData(newTagsArr)
     }
 
+    const clearAllTags = () => {
+        setFilterTagsData(pollData)
+    }
+
     useEffect(() => {
         const urlQuery = filterTagsData.filter(tag => tag.select).map(tag => tag.name).join(',')
         getFilteredPolls(urlQuery)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filterTagsData])
+
+    useEffect(() => {
+        if (filterUI) updateTagValue(filterUI, true)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [filterUI])
 
     return (
         <Menu >
@@ -56,6 +67,7 @@ export default function FilterPolls({ getFilteredPolls }: Props) {
                         <Badge onClick={() => updateTagValue(tag.name)} className={`hover:bg-red-300 hover:text-white cursor-pointer ${tag.select ? 'bg-red-400 text-white' : ''}`} color='gray' key={`tag_${index}`}>{tag.name}</Badge>
                     ))}
                 </div>
+                    <Button onClick={clearAllTags} className='mt-2 w-full hover:bg-slate-100' variant='outline' color='gray' uppercase>Clear</Button>
             </Menu.Dropdown>
         </Menu>
     )
