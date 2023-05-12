@@ -1,5 +1,5 @@
 import { Poll } from '@/types/interfaces';
-import { Badge } from '@mantine/core';
+import { Badge, Text } from '@mantine/core';
 import { useRouter } from 'next/router';
 import { MouseEvent } from 'react';
 import { CLIENT_HOST } from './Navbar';
@@ -28,12 +28,14 @@ function PollCard({ id, title, content, colour, tags, updateFilterUI }: Props) {
 
             <div className='h-32 rounded-t-lg' style={{ backgroundColor: colour }}></div>
 
-            <div className='h-full flex flex-col justify-between px-3 py-4'>
+            <div className='h-full flex flex-col justify-around px-3 pb-2'>
                 <div>
                     <h1 className='text-slate-700 font-bold break-words w-3/4'>{title}</h1>
-                    <p className='text-slate-600 font-semibold'>{content}</p>
+                    <Text lineClamp={3} className='text-slate-600 font-semibold'>
+                        {content}
+                    </Text>
                 </div>
-                <div className="flex flex-wrap gap-1 mt-3">
+                <div className="flex flex-wrap gap-1">
                     {tags.map((tag: string, index: number) => (
                         <button onClick={e => filterTag(e, tag)} key={`polltag_${index}`} >
                             <Badge color="red" variant="outline" className={`${roboto.className} cursor-pointer hover:text-white hover:bg-gradient-to-r from-red-400 to-rose-400`}>
