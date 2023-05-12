@@ -1,10 +1,11 @@
-import { ENDPOINT } from '@/pages/poll'
+import { SERVER_HOST } from '@/pages/poll'
 import { FormPoll, Options, Poll } from '@/types/interfaces'
 import { ActionIcon, Badge, Button, ColorInput, Modal, MultiSelect, TextInput, Textarea, rem } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import React, { useState } from 'react'
 import { KeyedMutator } from 'swr'
 import { IconX, IconBox } from '@tabler/icons-react';
+import { roboto } from '@/pages/_app'
 
 type Props = {
     mutate: KeyedMutator<Poll[]>
@@ -42,7 +43,7 @@ export default function FormCreatePoll({ mutate }: Props) {
 
     const insertPoll = async (values: FormPoll) => {
         values.options = options
-        const updated = await fetch(`${ENDPOINT}/api/poll/new`, {
+        const updated = await fetch(`${SERVER_HOST}/api/poll/new`, {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json"
@@ -83,7 +84,7 @@ export default function FormCreatePoll({ mutate }: Props) {
 
     return (
         <>
-            <Modal opened={openModal} onClose={() => setOpenModal(false)} title="Create Poll" >
+            <Modal opened={openModal} onClose={() => setOpenModal(false)} title="Create Poll" className={`${roboto.className}`} >
                 <form onSubmit={form.onSubmit(insertPoll)}>
 
                     <TextInput required mb={12} label="Title" placeholder='What poll do you want to create' {...form.getInputProps("title")} />
@@ -103,19 +104,19 @@ export default function FormCreatePoll({ mutate }: Props) {
                                 </Badge>
                             ))}
                         </div>
-                        <Button onClick={insertOption} mb={12} className='cursor-pointer transition duration-300 hover:text-white hover:bg-gradient-to-r from-red-500 to-rose-500' variant="outline" color="red">
+                        <Button onClick={insertOption} mb={12} className={`${roboto.className} cursor-pointer transition duration-300 hover:text-white hover:bg-gradient-to-r from-red-500 to-rose-500`} variant="outline" color="red">
                             Add option
                         </Button>
                     </div>
 
-                    <Button disabled={options.length >= 2 ? false : true} type='submit' uppercase className='w-full cursor-pointer transition duration-300 hover:text-white hover:bg-gradient-to-r from-red-500 to-rose-500' variant="outline" color="red">
+                    <Button disabled={options.length >= 2 ? false : true} type='submit' uppercase className={`${roboto.className} w-full cursor-pointer transition duration-300 hover:text-white hover:bg-gradient-to-r from-red-500 to-rose-500`} variant="outline" color="red">
                         create this poll
                     </Button>
 
                 </form>
             </Modal>
 
-            <Button onClick={() => setOpenModal(true)} uppercase className='cursor-pointer transition duration-300 hover:text-white hover:bg-gradient-to-r from-red-500 to-rose-500' variant="outline" color="red">
+            <Button onClick={() => setOpenModal(true)} uppercase className={`${roboto.className} cursor-pointer transition duration-300 hover:text-white hover:bg-gradient-to-r from-red-500 to-rose-500`} variant="outline" color="red">
                 create poll
             </Button>
         </>

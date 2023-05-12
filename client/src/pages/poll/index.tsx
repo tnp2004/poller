@@ -5,13 +5,11 @@ import PollCard from '@/components/PollCard'
 import FormCreatePoll from '@/components/FormCreatePoll'
 import FilterPolls from '@/components/FilterPolls'
 
-type Props = {}
+export const SERVER_HOST = process.env.NEXT_PUBLIC_SERVER_HOST
 
-export const ENDPOINT = "http://localhost:4000"
+const fetcher = (url: string) => fetch(`${SERVER_HOST}/${url}`).then(r => r.json())
 
-const fetcher = (url: string) => fetch(`${ENDPOINT}/${url}`).then(r => r.json())
-
-export default function Poll({ }: Props) {
+export default function Poll() {
 
   const { data, mutate } = useSWR<Poll[]>("api/poll", fetcher)
   const [filterPolls, setFilterPolls] = useState<Poll[]>([])
@@ -20,7 +18,7 @@ export default function Poll({ }: Props) {
 
   const getFilteredPolls = async (tags: string) => {
     if (tags) {
-      const data = await (await fetch(`${ENDPOINT}/api/poll?tags=${tags}`)).json()
+      const data = await (await fetch(`${SERVER_HOST}/api/poll?tags=${tags}`)).json()
       setFilterPolls(data)
       setFilter(true)
       return
@@ -35,7 +33,6 @@ export default function Poll({ }: Props) {
 
   return (
     <div>
-      <h1>Poll</h1>
       <div className='border-2 w-1/3 h-10 rounded mx-auto flex gap-1'>
         <FormCreatePoll mutate={mutate} />
         <FilterPolls getFilteredPolls={getFilteredPolls} filterUI={filterUI} />
