@@ -29,6 +29,7 @@ func main() {
 	}))
 
 	poll.Get("", GetPolls)
+	poll.Get("/:id", GetPollById)
 	poll.Post("/new", NewPoll)
 	poll.Delete("/delete/:id", DeletePoll)
 	poll.Patch("/update/:id/:option", UpdatePoll)
@@ -45,6 +46,24 @@ func GetPolls(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(database.GetPolls())
+}
+
+func GetPollById(c *fiber.Ctx) error {
+	id, err := c.ParamsInt("id")
+
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Poll id must be a numbers only",
+		})
+	}
+
+	poll, err := database.GetPoll(id)
+
+	if err != nil {
+		return c.JSON(err.Error())
+	}
+
+	return c.JSON(poll)
 }
 
 func NewPoll(c *fiber.Ctx) error {

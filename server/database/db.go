@@ -31,6 +31,17 @@ func GetPolls() []Poll {
 	return pollDB
 }
 
+func GetPoll(id int) (*Poll, error) {
+	for _, poll := range pollDB {
+		if poll.ID == id {
+			return &poll, nil
+		}
+	}
+
+	errMessage := fmt.Sprintf("Poll id: %v not found", id)
+	return nil, errors.New(errMessage)
+}
+
 func GetPollsByTags(tags []string) []Poll {
 	matchingProducts := findMatchingPolls(pollDB, tags)
 	if matchingProducts != nil {
