@@ -12,6 +12,7 @@ export interface Poll {
 export interface Options {
     choice: string
     colour: string
+    point: string
 }
 
 export interface FormPoll {

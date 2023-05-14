@@ -4,6 +4,7 @@ import { Poll } from '@/types/interfaces'
 import PollCard from '@/components/PollCard'
 import FormCreatePoll from '@/components/FormCreatePoll'
 import FilterPolls from '@/components/FilterPolls'
+import { Pagination } from '@mantine/core'
 
 export const SERVER_HOST = process.env.NEXT_PUBLIC_SERVER_HOST
 
@@ -15,6 +16,11 @@ export default function Poll() {
   const [filterPolls, setFilterPolls] = useState<Poll[]>([])
   const [filter, setFilter] = useState<boolean>(false)
   const [filterUI, setFilterUI] = useState<string>('')
+  const [page, setPage] = useState<number>(1)
+  const POLL_PER_PAGE = 8
+  const totalPoll = data?.length || 0
+
+  const totalPages: number = Math.ceil( totalPoll / POLL_PER_PAGE)
 
   const getFilteredPolls = async (tags: string) => {
     if (tags) {
@@ -32,30 +38,32 @@ export default function Poll() {
   }
 
   return (
-    <div>
-      <div className='border-2 w-1/3 h-10 rounded mx-auto flex gap-1'>
+    <>
+      <div className='w-1/3 h-10 rounded mx-auto flex gap-1'>
         <FormCreatePoll mutate={mutate} />
         <FilterPolls getFilteredPolls={getFilteredPolls} filterUI={filterUI} />
       </div>
+
       <div className='flex flex-wrap gap-5 w-3/4 mx-auto justify-center p-5'>
-        
+
         {/* Filter poll */}
         {filter && filterPolls.length !== 0 && filterPolls?.map((poll: Poll, index: number) => {
           return <PollCard {...poll} updateFilterUI={updateFilterUI} key={`poll_${index}`} />
         })}
 
-        {filter && filterPolls.length === 0 && <h1>no data filter</h1>}
+        {filter && filterPolls.length === 0 && <span className='text-xl text-slate-600 my-10'>no data filter</span>}
 
         {/* All poll */}
         {!filter && data?.length !== 0 && data?.map((poll: Poll, index: number) => {
           return <PollCard {...poll} updateFilterUI={updateFilterUI} key={`poll_${index}`} />
         })}
 
-        {!filter && data?.length === 0 && <h1>no poll data</h1>}
-
+        {!filter && data?.length === 0 && <span className='text-xl text-slate-600 my-10'>no poll data</span>}
 
       </div>
 
-    </div>
+      <Pagination value={page} onChange={setPage} total={totalPages} position='center' mt={50} mb={30} color='red' />
+
+    </>
   )
 }
