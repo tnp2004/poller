@@ -8,7 +8,7 @@ import { Pagination } from '@mantine/core'
 
 export const SERVER_HOST = process.env.NEXT_PUBLIC_SERVER_HOST
 
-const fetcher = (url: string) => fetch(`${SERVER_HOST}/${url}`).then(r => r.json())
+export const fetcher = (url: string) => fetch(`${SERVER_HOST}/${url}`).then(r => r.json())
 
 export default function Poll() {
 
