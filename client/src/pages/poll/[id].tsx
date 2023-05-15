@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { SERVER_HOST, fetcher } from '.'
+import React from 'react'
+import { fetcher } from '.'
 import { Poll } from '@/types/interfaces'
 import { useRouter } from 'next/router'
 import { Badge } from '@mantine/core'

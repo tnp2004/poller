@@ -33,7 +33,8 @@ export default function FormCreatePoll({ mutate }: Props) {
         if (optInput && optColour) {
             const option = {
                 choice: optInput,
-                colour: optColour
+                colour: optColour,
+                point: 0
             }
 
             setOptions(prev => [...prev, option])
