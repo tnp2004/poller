@@ -6,15 +6,16 @@ import { Badge } from '@mantine/core'
 import { roboto } from '../_app'
 import BarChart from '@/components/BarChart'
 import useSWR from 'swr'
+import ChoiceRadio from '@/components/ChoiceRadio'
 
 export default function PollInformation() {
 
   const router = useRouter()
-  const { id } = router.query
+  const id = router.query.id || 0 //  || 0 for avoid undefiend data
   const { data, mutate } = useSWR<Poll>(`api/poll/${id}`, fetcher)
 
   return (
-    <div className='w-2/3 mx-auto drop-shadow-xl bg-white rounded p-2'>
+    <div className='w-2/3 mx-auto drop-shadow-xl bg-white rounded p-2 my-5'>
       <div className='flex justify-between'>
         <h1 className='font-bold text-slate-700'>{data?.title}</h1>
         <div className='flex gap-1 mx-5 items-center'>
@@ -27,7 +28,8 @@ export default function PollInformation() {
       </div>
       <p>{data?.content}</p>
 
-      {data && <BarChart pollData={data} mutate={mutate} />}
+      {data && <BarChart pollData={data} />}
+      {data && <ChoiceRadio pollData={data} mutate={mutate} />}
 
     </div>
   )

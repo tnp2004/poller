@@ -1,39 +1,25 @@
 import { Poll } from '@/types/interfaces'
-import { Button } from '@mantine/core'
 import React from 'react'
-import { SERVER_HOST } from '@/pages/poll'
-import { KeyedMutator } from 'swr'
 
 type Props = {
     pollData: Poll
-    mutate: KeyedMutator<Poll>
 }
 
-export default function BarChart({ pollData, mutate }: Props) {
+export default function BarChart({ pollData }: Props) {
 
     const totalVote = pollData.options?.map(option => option.point).reduce((sum, val) => sum += val)
 
-    const votePoll = async (id: string, choice: string) => {
-        const data = await (await fetch(`${SERVER_HOST}/api/poll/update/${id}/${choice}`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })).json()
-        mutate(data)
-    }
-
     return (
-        <div className='p-2 grid grid-cols-4 gap-4'>
+        <div className='p-2 flex flex-wrap gap-4 bg-gradient-to-t from-slate-50 to-slate-100 rounded my-5'>
 
             {pollData.options?.map((opt, index) => (
-                <div className='text-center w-32' key={`option_${index}`}>
+                <div className='text-center w-32 mx-auto' key={`option_${index}`}>
                     <div className='relative h-72 w-28 mx-auto'>
-                        <div className='rounded-t-xl w-full absolute bottom-0 pt-2' style={{ height: `${(opt.point / totalVote) * 100}%`, backgroundColor: opt.colour }}>
+                        <div className='border-2 border-b-0 border-slate-700 rounded-t-xl w-full absolute bottom-0 pt-2 pb-6 ease-in duration-150' style={{ height: `${(opt.point / totalVote) * 100}%`, backgroundColor: opt.colour }}>
                             <label className='font-bold text-xl text-slate-100'>{opt.point}</label>
                         </div>
                     </div>
-                    <Button onClick={() => votePoll(pollData.id, opt.choice)} className='bg-slate-600 text-white w-full p-1 rounded-b-lg'>{opt.choice}</Button>
+                    <div className='bg-slate-700 text-white w-full rounded-b-lg py-1'>{opt.choice}</div>
                 </div>
             ))}
 
