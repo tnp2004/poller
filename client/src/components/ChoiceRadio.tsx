@@ -1,6 +1,6 @@
-import { MouseEventHandler, useState } from 'react'
+import { useState } from 'react'
 import { RadioGroup } from '@headlessui/react'
-import { Options, Poll } from '@/types/interfaces'
+import { Poll } from '@/types/interfaces'
 import { Button } from '@mantine/core'
 import { SERVER_HOST } from '@/pages/poll'
 import { KeyedMutator } from 'swr'
@@ -12,6 +12,7 @@ type Props = {
 
 export default function ChoiceRadio({ pollData, mutate }: Props) {
     const [selected, setSelected] = useState<string>('')
+    const [disable, setDisable] = useState<boolean>(false)
 
     const votePoll = async () => {
         try {
@@ -22,6 +23,7 @@ export default function ChoiceRadio({ pollData, mutate }: Props) {
                 }
             })).json()
             mutate(data)
+            setDisable(true)
 
         } catch (e) {
             console.error(e)
@@ -55,18 +57,11 @@ export default function ChoiceRadio({ pollData, mutate }: Props) {
                                                 <div className="text-sm">
                                                     <RadioGroup.Label
                                                         as="p"
-                                                        className={`font-medium  ${checked ? 'text-white' : 'text-gray-900'
+                                                        className={`font-bold  ${checked ? 'text-white' : 'text-gray-900'
                                                             }`}
                                                     >
                                                         {opt.choice}
                                                     </RadioGroup.Label>
-                                                    <RadioGroup.Description
-                                                        as="span"
-                                                        className={`inline ${checked ? 'text-sky-100' : 'text-gray-500'
-                                                            }`}
-                                                    >
-
-                                                    </RadioGroup.Description>
                                                 </div>
                                             </div>
                                             {checked && (
@@ -81,7 +76,7 @@ export default function ChoiceRadio({ pollData, mutate }: Props) {
                         ))}
                     </div>
                 </RadioGroup>
-                <Button color='red' variant='gradient' className='w-full my-5 bg-gradient-to-r from-red-500 to-rose-500 p-2 rounded text-white font-bold' disabled={selected ? false : true} onClick={votePoll}>Vote</Button>
+                <Button color='red' variant='gradient' className='w-full my-5 bg-gradient-to-r from-red-500 to-rose-500 p-2 rounded text-white font-bold' disabled={disable} onClick={votePoll}>Vote</Button>
             </div>
         </div>
     )

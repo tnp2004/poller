@@ -4,7 +4,6 @@ import { Poll } from '@/types/interfaces'
 import PollCard from '@/components/PollCard'
 import FormCreatePoll from '@/components/FormCreatePoll'
 import FilterPolls from '@/components/FilterPolls'
-import { Pagination } from '@mantine/core'
 
 export const SERVER_HOST = process.env.NEXT_PUBLIC_SERVER_HOST
 
@@ -16,11 +15,6 @@ export default function Poll() {
   const [filterPolls, setFilterPolls] = useState<Poll[]>([])
   const [filter, setFilter] = useState<boolean>(false)
   const [filterUI, setFilterUI] = useState<string>('')
-  const [page, setPage] = useState<number>(1)
-  const POLL_PER_PAGE = 8
-  const totalPoll = data?.length || 0
-
-  const totalPages: number = Math.ceil( totalPoll / POLL_PER_PAGE)
 
   const getFilteredPolls = async (tags: string) => {
     if (tags) {
@@ -39,7 +33,7 @@ export default function Poll() {
 
   return (
     <>
-      <div className='w-1/3 h-10 rounded mx-auto flex gap-1'>
+      <div className='w-1/3 h-10 rounded mx-auto flex justify-center gap-1 my-5'>
         <FormCreatePoll mutate={mutate} />
         <FilterPolls getFilteredPolls={getFilteredPolls} filterUI={filterUI} />
       </div>
@@ -61,8 +55,6 @@ export default function Poll() {
         {!filter && data?.length === 0 && <span className='text-xl text-slate-600 my-10'>no poll data</span>}
 
       </div>
-
-      <Pagination value={page} onChange={setPage} total={totalPages} position='center' mt={50} mb={30} color='red' />
 
     </>
   )

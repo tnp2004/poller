@@ -15,7 +15,7 @@ export default function PollInformation() {
   const { data, mutate } = useSWR<Poll>(`api/poll/${id}`, fetcher)
 
   return (
-    <div className='w-2/3 mx-auto drop-shadow-xl bg-white rounded p-2 my-5'>
+    <div className='md:w-2/3 mx-auto drop-shadow-xl bg-white rounded p-2 my-5'>
       <div className='flex justify-between'>
         <h1 className='font-bold text-slate-700'>{data?.title}</h1>
         <div className='flex gap-1 mx-5 items-center'>

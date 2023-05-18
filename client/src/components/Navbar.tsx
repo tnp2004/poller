@@ -14,8 +14,8 @@ export const CLIENT_HOST = process.env.NEXT_PUBLIC_CLIENT_HOST
 export default function Navbar() {
 
     return (
-        <nav className={`${berkshire_swash.className} bg-gradient-to-b from-red-500 to-rose-500 py-2 px-5 text-white text-xl mb-5`}>
-            <div className='flex justify-between w-3/4 px-8 mx-auto'>
+        <nav className={`${berkshire_swash.className} bg-gradient-to-b from-red-500 to-rose-500 py-2 px-5 text-white text-xl`}>
+            <div className='flex justify-between md:w-3/4 md:px-8 mx-auto'>
                 <label className={`font-bold text-2xl mr-10`}>
                     <Link href={`${CLIENT_HOST}/`} className='bg-gradient-to-t from-slate-100 to-white bg-clip-text text-transparent'>poller</Link>
                 </label>
