@@ -3,6 +3,7 @@ package database
 import (
 	"errors"
 	"fmt"
+	"net/url"
 	"time"
 )
 
@@ -25,7 +26,7 @@ type Poll struct {
 	Updated_at string   `json:"updated_at"`
 }
 
-var pollDB = []Poll{}
+var pollDB = GetExampleData()
 
 func GetPolls() []Poll {
 	return pollDB
@@ -77,14 +78,15 @@ func deleteData(polls []Poll, i int) []Poll {
 	return polls
 }
 
-func UpdatePoint(id int, opt string) ([]Poll, error) {
+func UpdatePoint(id int, opt string) (*Poll, error) {
 	for i, poll := range pollDB {
 		if id == poll.ID {
 			for j, p := range poll.Options {
-				if p.Choice == opt {
+				decodeOption, _ := url.QueryUnescape(opt)
+				if p.Choice == decodeOption {
 					pollDB[i].Options[j].Point++
 					pollDB[i].Updated_at = time.Now().Format(timeFormat)
-					return pollDB, nil
+					return &pollDB[i], nil
 				}
 			}
 			errMessage := fmt.Sprintf("Can not update, Poll option: %v does not exist", opt)

@@ -22,7 +22,7 @@ func main() {
 	app := fiber.New()
 	api := app.Group("/api")
 	poll := api.Group("/poll")
-
+	fmt.Println("Hi air! 55")
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: "http://localhost:3000",
 		AllowHeaders: "Origin, Content-Type, Accept",
